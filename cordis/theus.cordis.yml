@@ -1,0 +1,90 @@
+# Runtime composition for the theus daemon's single dsh-jsonrpc-agent subprocess.
+# stdout is reserved for JSON-RPC; do not add a console logger or terminal UI.
+#
+# Modeled on deepseek-harness's examples/jsonrpc-agent/cordis.yml (an unattended,
+# no-approval-layer coding-agent deployment), with two deliberate changes.
+#
+# First: the LLM section is not a single hardcoded llm-deepseek adapter. It mounts the same
+# multi-provider set deepseek-harness's own dsh-base bundle uses (llm, settings,
+# credentials, llm-deepseek, llm-pi-ai dormant-until-configured) so this daemon
+# runs whatever provider the user's own ~/.dsh/settings.yaml already selects —
+# read client-side by bin/theus-daemon.js (lib/settings.js) and requested
+# explicitly per session via the SDK client's `initialize({ provider, model })`.
+# `settings`/`credentials` default to the same $DSH_HOME/~/.dsh paths a normal
+# dsh session already uses, so this is the user's existing configuration, not a
+# new one.
+#
+# Second: the example's subagent-spawning and TODO-tracking entries (subagent,
+# subagent-spawn-in-process, tool-subagent, tool-todo) are dropped. @theus is a
+# one-shot, non-interactive prompt-enrichment turn (see README) with no
+# documented use for spawning nested sub-agents or tracking a TODO list across
+# turns — carrying them added unused tool surface and dependency weight.
+
+- id: sdk-jsonrpc-server
+  name: '@deepseek-ai/dsh-sdk-jsonrpc-server'
+
+- id: llm
+  name: '@deepseek-ai/dsh-llm'
+
+- id: settings
+  name: '@deepseek-ai/dsh-settings-file'
+
+- id: credentials
+  name: '@deepseek-ai/dsh-credentials-local'
+
+- id: llm-deepseek
+  name: '@deepseek-ai/dsh-llm-deepseek'
+
+- id: llm-pi-ai
+  name: '@deepseek-ai/dsh-llm-pi-ai'
+
+# Managed child-process groups for the bash executor (spawn/kill/output plumbing).
+- id: subprocess
+  name: '@deepseek-ai/dsh-subprocess-local'
+
+- id: bash
+  name: '@deepseek-ai/dsh-bash-local'
+  config:
+    cwd: !!js process.env.DSH_CWD ?? process.cwd()
+    timeoutMs: 60000
+
+- id: agent-spine
+  name: '@deepseek-ai/dsh-agent-spine-demo'
+  config:
+    persona: !!js process.env.DSH_SYSTEM_PROMPT ?? 'You are a coding agent enriching a Claude Code prompt with grounding context.'
+    workspaceContext: false
+    skills:
+      enabled: false
+    toolBash:
+      enableRunInBackground: false
+    toolJobs: false
+
+- id: sessions
+  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  config:
+    root: !!js process.env.DSH_SESSION_ROOT ?? './.sessions'
+
+- id: session-checkpoints
+  name: '@deepseek-ai/dsh-session-checkpoint-policy'
+
+- id: fs-local
+  name: '@deepseek-ai/dsh-fs-local'
+  config:
+    cwd: !!js process.env.DSH_CWD ?? process.cwd()
+
+- id: fs-observation-policy
+  name: '@deepseek-ai/dsh-fs-observation-policy'
+
+- id: tool-fs
+  name: '@deepseek-ai/dsh-tool-fs'
+
+- id: token-meter
+  name: '@deepseek-ai/dsh-token-meter'
+
+- id: compaction-basic
+  name: '@deepseek-ai/dsh-compaction-basic'
+  config:
+    thresholdRatio: 0.8
+    retainRatio: 0.16
+    maxTokens: 8192
+    compactionRetries: 1

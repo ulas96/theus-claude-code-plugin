@@ -1,0 +1,10 @@
+{
+  "name": "theus-claude-code-plugin",
+  "displayName": "Theus",
+  "description": "@theus UserPromptSubmit hook: enriches a prompt via a self-hosted DeepSeek Harness (dsh) agent turn using whatever LLM provider your local dsh installation is already configured with",
+  "version": "0.1.0",
+  "author": {
+    "name": "Yusuf Ulaş Yıldız"
+  },
+  "license": "MIT"
+}

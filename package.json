@@ -1,0 +1,36 @@
+{
+  "name": "theus-claude-code-plugin",
+  "version": "0.1.0",
+  "description": "Claude Code plugin: @theus UserPromptSubmit hook that enriches a prompt via a self-hosted DeepSeek Harness (dsh) agent turn",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "node --test lib/*.test.js"
+  },
+  "bin": {
+    "theus-hook": "bin/theus-hook.js",
+    "theus-daemon": "bin/theus-daemon.js"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-sdk-client": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-sdk-jsonrpc-demo": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-sdk-jsonrpc-server": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-llm": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-settings-file": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-credentials-local": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-llm-deepseek": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-llm-pi-ai": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-subprocess-local": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-bash-local": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-agent-spine-demo": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-session-persistence-jsonl": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-session-checkpoint-policy": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-fs-local": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-fs-observation-policy": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-tool-fs": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-token-meter": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-compaction-basic": "0.1.0-rc.8",
+    "yaml": "^2.9.0"
+  }
+}
